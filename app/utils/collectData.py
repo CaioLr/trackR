@@ -1,27 +1,42 @@
-from . import cpuData
-from . import gpuData
+from . import performanceData
 
-cpu = cpuData.CpuDataCollector()
+pData = performanceData.PerformanceDataCollector()
+
 def get_cpu_info():
-
     return {
-        'cpu_percent_usage': cpu.get_cpu_usage(),
-        'cpu_temp': cpu.get_cpu_temp(),
+        'cpu_percent_usage': pData.get_cpu_usage(),
+        'cpu_temp': pData.get_cpu_temp(),
     }
 
-gpu = gpuData.GpuDataCollector()
 def get_gpu_info():
-
     return {
-        'gpu_percent_usage': gpu.get_gpu_usage(),
-        'gpu_temp': gpu.get_gpu_temp(),
-        'gpu_memory_usage': gpu.get_gpu_memory(),
+        'gpu_percent_usage': pData.get_gpu_usage(),
+        'gpu_temp': pData.get_gpu_temp(),
+        'gpu_memory_usage': pData.get_gpu_memory(),
+    }
+
+def get_memory_info():
+    memory_usage = pData.get_memory_sizes()
+    ram_total = memory_usage[1]['available'] + memory_usage[0]['used']
+    memory_usage = (memory_usage[0]['used'] / ram_total) * 100
+    return {
+        'ram_percent_usage': memory_usage,
+        'ram_used': pData.get_memory_sizes()[0]['used'],
+        'ram_available': pData.get_memory_sizes()[1]['available'],
+        'ram_total': ram_total,
+    }
+
+def get_storage_info():
+    return {
+        'storage_usage': pData.get_storage_usage(),
+        'storage_temp': pData.get_storage_temp()
     }
 
 def get_data():
     data = {
         'cpu': get_cpu_info(),
         'gpu': get_gpu_info(),
+        'ram': get_memory_info(),
+        'storage': get_storage_info(),
     }
-
     return data
