@@ -1,8 +1,7 @@
 from enum import nonmember
 import os
 import clr
-
-clr.AddReference(os.path.join(os.getcwd(), "assets\lib\LibreHardwareMonitorLib.dll"))
+clr.AddReference(os.path.join(os.getcwd(), "app", "assets", "lib", "LibreHardwareMonitorLib.dll"))
 from LibreHardwareMonitor import Hardware
 
 class PerformanceDataCollector:
