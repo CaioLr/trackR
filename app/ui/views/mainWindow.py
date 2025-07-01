@@ -29,7 +29,7 @@ class MainWindow(QMainWindow):
 
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_temp)
-        self.timer.start(1500)
+        self.timer.start(500)
 
     def update_temp(self):
         self.conn.send("update")
