@@ -1,21 +1,14 @@
-from ui.views import main_window
-from PySide6.QtWidgets import QApplication
-from monitors import data_formatter_monitor
+import sys
 from multiprocessing import Process, Pipe
 from utils.logger import setup_logger
 import logging
-
-def hardware_worker(conn,log) -> None:
-    while True:
-        cmd = conn.recv()
-        data = data_formatter_monitor.get_data()
-        try:
-            conn.send(data)
-        except Exception as e:
-            log.info(f"Fail to send data through hardware_worker: {e}")
-            log.info(f"Fail to send data through hardware_worker: {e}")
-        if cmd == "stop":
-            break
+#UI
+from PySide6.QtWidgets import QApplication
+from PySide6.QtQml import QQmlApplicationEngine
+from PySide6.QtCore import QUrl
+from ui.views.bridge import Bridge
+#Monitors
+from monitors.hardware_worker import hardware_worker
 
 def main() -> None:
     setup_logger()
@@ -30,16 +23,19 @@ def main() -> None:
     else:
         log.info("Hardware_worker started successfully")
 
-    app = QApplication()
-    base = main_window.MainWindow(parent_conn, p)
-    try:
-        base.show()
-    except Exception as e:
-        log.error(f"Failed to start the application: {e}")
-    else:
-        log.info("Application started successfully")
+    app = QApplication(sys.argv)
+    bridge = Bridge(parent_conn, p)
+
+    engine = QQmlApplicationEngine()
+    engine.rootContext().setContextProperty("bridge", bridge)
+    engine.load(QUrl("app/ui/views/main_window.qml"))
+
+    if not engine.rootObjects():
+        log.error("Failed to load QML file")
+        sys.exit(-1)
 
     app.exec()
+    bridge.stop_process()
 
 if __name__ == "__main__":
     main()
