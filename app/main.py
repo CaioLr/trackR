@@ -28,7 +28,7 @@ def main() -> None:
 
     engine = QQmlApplicationEngine()
     engine.rootContext().setContextProperty("bridge", bridge)
-    engine.load(QUrl("app/ui/views/main_window.qml"))
+    engine.load(QUrl("app/ui/views/mainWindow.qml"))
 
     if not engine.rootObjects():
         log.error("Failed to load QML file")

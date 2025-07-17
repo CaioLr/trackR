@@ -2,6 +2,9 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+import "containers"
+import "components"
+
 ApplicationWindow {
     id: mainWindow
     width: 854
@@ -11,22 +14,26 @@ ApplicationWindow {
     maximumWidth: 1920
     maximumHeight: 1080
 
-    ColumnLayout {
+    Rectangle {
         anchors.fill: parent
+        color: "#FAF9F6"
 
-        Label {
-            id: welcomeLabel
-            text: "trackR"
-            font.pointSize: 24
-            horizontalAlignment: Text.AlignHCenter
-            Layout.fillWidth: true
+        RowLayout {
+            id: main_layout
+            anchors.fill: parent
+            anchors.margins: 10
+            spacing: 4
+
+            MenuContainer { }
+            OverallContainer { }
         }
     }
+
 
     Connections {
         target: bridge
         function onData_updated(data) {
-            welcomeLabel.text = data.cpu.cpu_temp.toFixed(2)
+            // welcomeLabel.text = data.cpu.cpu_temp.toFixed(2)
         }
     }
 
